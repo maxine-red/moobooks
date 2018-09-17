@@ -6,8 +6,9 @@
 [![Gem Version](https://img.shields.io/gem/v/moobooks.svg)](https://rubygems.org/gems/moobooks)
 ![GitHub Release Date](https://img.shields.io/github/release-date/maxine-red/moobooks.svg)
 
-[![Maintainability](https://api.codeclimate.com/v1/badges/eb00f2f4a60e01c8732a/maintainability)](https://codeclimate.com/github/maxine-red/moobooks/maintainability)
-[![Test Coverage](https://api.codeclimate.com/v1/badges/eb00f2f4a60e01c8732a/test_coverage)](https://codeclimate.com/github/maxine-red/moobooks/test_coverage)
+[![Maintainability](https://api.codeclimate.com/v1/badges/91b4b0323102f6e63501/maintainability)](https://codeclimate.com/github/maxine-red/moobooks/maintainability)
+[![Test
+Coverage](https://api.codeclimate.com/v1/badges/91b4b0323102f6e63501/test_coverage)](https://codeclimate.com/github/maxine-red/moobooks/test_coverage)
 [![Inline docs](http://inch-ci.org/github/maxine-red/moobooks.svg)](http://inch-ci.org/github/maxine-red/moobooks)
 
 ## Description
