@@ -19,7 +19,16 @@
 
 module Moobooks
   module Twitter
+    # @author Maxine Michalski
+    # @since 0.1.0
+    #
+    # A class to handle Twitter apps.
     class App
+      # @author Maxine Michalski
+      #
+      # Create a new app, by storing it's credentials into databse.
+      #
+      # @param name [String] Name of the app
       def self.create(name)
         puts 'You can find both consumer key and consumer secret in '\
              'your app page.',
