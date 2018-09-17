@@ -28,5 +28,6 @@ Gem::Specification.new do |gem|
   gem.add_runtime_dependency 'json', '~> 2.0'
   gem.add_runtime_dependency 'mastodon', '~> 0.1'
   gem.add_runtime_dependency 'moo_ebooks', '~> 1.0'
+  gem.add_runtime_dependency 'pg', '~> 1.0'
   gem.add_runtime_dependency 'twitter', '~> 6.0'
 end

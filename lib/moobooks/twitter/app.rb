@@ -17,8 +17,24 @@
 # You should have received a copy of the GNU General Public License
 # along with MooBooks.  If not, see <http://www.gnu.org/licenses/>.
 
-require 'json'
-require 'mastodon'
-
-require_relative 'moobooks/twitter'
-require_relative 'moobooks/database'
+module Moobooks
+  module Twitter
+    class App
+      def self.create(name)
+        puts 'You can find both consumer key and consumer secret in '\
+             'your app page.',
+             'If you haven\'t created an app yet, you need to create '\
+             'one on Twitter.'
+        print 'Consumer key: '
+        consumer_key = $stdin.gets.chomp
+        print 'Consumer secret: '
+        consumer_secret = $stdin.gets.chomp
+        Moobooks::Database.connect do |pg|
+          pg.exec('INSERT INTO twitter.apps (name, consumer_key, '\
+                  'consumer_secret) VALUES ($1, $2, $3);',
+                  [name, consumer_key, consumer_secret])
+        end
+      end
+    end
+  end
+end

@@ -24,11 +24,35 @@ def print_help
   puts 'Usage `plushies <command> [<arguments>]'
 end
 
+def print_add_help
+  puts "Usages:\n  `plushies add app [twitter|mastodon] [app_name]`"
+end
+
 case cmd = ARGV.shift
 when '-h'
   print_help
-when 'connect'
-  # code to connect to a social media account
+when 'add'
+  case cmd2 = ARGV.shift
+  when '-h'
+    print_add_help
+  when 'app' then
+    platform = ARGV.shift
+    name = ARGV.shift
+    warn 'Name can\'t be empty.' if name.nil?
+    case platform
+    when 'twitter'
+      Moobooks::Twitter::App.create(name)
+    when 'mastodon'
+    else
+      warn "Unrecognized platform: #{platform}"
+      print_add_help
+      exit 1
+    end
+    puts 'Your app was successfully saved.'
+  else
+    warn "Unknown command: #{cmd} #{cmd2}"
+    print_add_help
+  end
 when 'update'
   # code gather new statuses from connected social media accounts
 when 'post'
