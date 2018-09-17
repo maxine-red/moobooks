@@ -17,22 +17,12 @@
 # You should have received a copy of the GNU General Public License
 # along with MooBooks.  If not, see <http://www.gnu.org/licenses/>.
 
-require 'pg'
-
-module Moobooks
-  # @author Maxine Michalski
-  # @since 0.1.0
-  #
-  # A general purpose database connection module.
-  #
-  # @return Result of the given block
-  module Database
-    def self.connect
-      pg = PG::Connection.new(dbname: 'moobooks')
-      pg.type_map_for_results = PG::BasicTypeMapForResults.new(pg)
-      result = yield pg
-      pg.close
-      result
+describe Moobooks::Database, '.conect' do
+  context 'a consumer key and secret are given' do
+    it 'saves them in a database' do
+      expect do |b|
+        Moobooks::Database.connect(&b)
+      end.to yield_with_args
     end
   end
 end

@@ -21,28 +21,76 @@ module Moobooks
   module Twitter
     # @author Maxine Michalski
     # @since 0.1.0
+    class AppNotFound < StandardError; end
+    # @author Maxine Michalski
+    # @since 0.1.0
     #
     # A class to handle Twitter apps.
     class App
+      # @return [Integer] ID of this app
+      attr_reader :id
+
+      # @return [String] Name of this app
+      attr_reader :name
+
+      # @return [String] Consumer key of this app
+      attr_reader :consumer_key
+
+      # @return [String] Consumer secret of this app
+      attr_reader :consumer_secret
       # @author Maxine Michalski
       #
       # Create a new app, by storing it's credentials into databse.
       #
       # @param name [String] Name of the app
-      def self.create(name)
-        puts 'You can find both consumer key and consumer secret in '\
-             'your app page.',
-             'If you haven\'t created an app yet, you need to create '\
-             'one on Twitter.'
-        print 'Consumer key: '
-        consumer_key = $stdin.gets.chomp
-        print 'Consumer secret: '
-        consumer_secret = $stdin.gets.chomp
+      # @param consumer_key [String] Twitter app consumer key
+      # 2param consumer_secret [String] Twitter app consumer secret
+      def self.create(name, consumer_key, consumer_secret)
+        if consumer_key.empty? || consumer_secret.empty?
+          raise ArgumentError, 'Consumer data can\'t be empty.'
+        end
         Moobooks::Database.connect do |pg|
           pg.exec('INSERT INTO twitter.apps (name, consumer_key, '\
                   'consumer_secret) VALUES ($1, $2, $3);',
                   [name, consumer_key, consumer_secret])
         end
+      end
+
+      # @author Maxine Michalski
+      #
+      # @return [Array<Moobooks::Twitter::App>]
+      def self.list
+        apps = Moobooks::Database.connect do |pg|
+          pg.exec('SELECT id FROM twitter.apps ORDER BY id;').to_a
+        end
+        apps.map do |a|
+          Moobooks::Twitter::App.new(a['id'])
+        end
+      end
+
+      # @author Maxine Michalski
+      #
+      # Initializer for Twitter appps
+      def initialize(id)
+        app = Moobooks::Database.connect do |pg|
+          pg.exec('SELECT id, name, consumer_key, consumer_secret, '\
+                  'created_at FROM twitter.apps WHERE id = $1;', [id]).first
+        end
+        raise AppNotFoundError if app.nil?
+        app.each do |k, v|
+          instance_variable_set("@#{k}", v)
+        end
+      end
+
+      # @author Maxine Michalski
+      #
+      # Turn this App into a string representation
+      #
+      # @notice The returned string will be in the form of '<id> <name>'
+      #
+      # @return [String]
+      def to_s
+        "#{@id} #{@name}"
       end
     end
   end
