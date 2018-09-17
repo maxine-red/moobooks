@@ -1,6 +1,5 @@
 # MooBooks: Mooing bots for your friends
 
-
 [![Build Status](https://travis-ci.org/maxine-red/moobooks.svg?branch=master)](https://travis-ci.org/maxine-red/moobooks)
 
 [![Gem Version](https://img.shields.io/gem/v/moobooks.svg)](https://rubygems.org/gems/moobooks)

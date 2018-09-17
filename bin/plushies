@@ -53,8 +53,8 @@ when %w[app list]
   platform = ARGV.shift
   case platform
   when 'twitter'
-    puts 'Known twitter apps',
-      Moobooks::Twitter::App.list.map(&:to_s).map { |a| "  #{a}" }
+    apps = Moobooks::Twitter::App.list.map(&:to_s).map { |a| "  #{a}" }
+    puts 'Known twitter apps', apps
   when 'mastodon'
     Moobooks::Mastodon::App.create(name)
   else
