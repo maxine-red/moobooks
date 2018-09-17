@@ -23,7 +23,7 @@ describe Moobooks::Twitter::App, '.create' do
       pg = double(PG::Connection)
       expect(pg).to receive(:exec).and_return(true)
       expect(Moobooks::Database).to receive(:connect).and_yield(pg)
-      expect(Moobooks::Twitter::App.create('', '1', '1')).to be true
+      expect(Moobooks::Twitter::App.create('', '1', '1')).to be nil
     end
   end
   context 'an empty consumer key and secret are given' do

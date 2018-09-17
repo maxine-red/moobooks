@@ -44,7 +44,7 @@ module Moobooks
       #
       # @param name [String] Name of the app
       # @param consumer_key [String] Twitter app consumer key
-      # 2param consumer_secret [String] Twitter app consumer secret
+      # @param consumer_secret [String] Twitter app consumer secret
       def self.create(name, consumer_key, consumer_secret)
         if consumer_key.empty? || consumer_secret.empty?
           raise ArgumentError, 'Consumer data can\'t be empty.'
@@ -54,11 +54,14 @@ module Moobooks
                   'consumer_secret) VALUES ($1, $2, $3);',
                   [name, consumer_key, consumer_secret])
         end
+        nil
       end
 
       # @author Maxine Michalski
       #
-      # @return [Array<Moobooks::Twitter::App>]
+      # Creates a list of all Twitter apps in database
+      #
+      # @return [Array<Moobooks::Twitter::App>] A list Twitter apps
       def self.list
         apps = Moobooks::Database.connect do |pg|
           pg.exec('SELECT id FROM twitter.apps ORDER BY id;').to_a
@@ -71,6 +74,8 @@ module Moobooks
       # @author Maxine Michalski
       #
       # Initializer for Twitter appps
+      #
+      # @param id [Integer] The ID of an app we want to fetch
       def initialize(id)
         app = Moobooks::Database.connect do |pg|
           pg.exec('SELECT id, name, consumer_key, consumer_secret, '\
@@ -88,7 +93,7 @@ module Moobooks
       #
       # @notice The returned string will be in the form of '<id> <name>'
       #
-      # @return [String]
+      # @return [String] A formatted string representation of this App
       def to_s
         "#{@id} #{@name}"
       end

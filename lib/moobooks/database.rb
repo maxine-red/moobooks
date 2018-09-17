@@ -27,6 +27,11 @@ module Moobooks
   #
   # @return Result of the given block
   module Database
+    # @author Maxine Michalski
+    #
+    # Spawns a database connection and yields it
+    #
+    # @return object Result of the database block
     def self.connect
       pg = PG::Connection.new(dbname: 'moobooks')
       pg.type_map_for_results = PG::BasicTypeMapForResults.new(pg)
