@@ -110,7 +110,7 @@ describe Moobooks::Twitter::App, '#created_at' do
   end
 end
 
-describe Moobooks::Twitter::App, '#activate' do
+describe Moobooks::Twitter::App, '#activate!' do
   it 'activates a plush' do
     pg = double(PG::Connection)
     data = [{ 'id' => 1, 'name' => 'test', 'created_at' => Time.now }]
@@ -118,5 +118,27 @@ describe Moobooks::Twitter::App, '#activate' do
     allow(Moobooks::Database).to receive(:connect).and_yield(pg)
     app = Moobooks::Plush.new(1)
     expect(app.activate!).to be nil
+  end
+end
+
+describe Moobooks::Twitter::App, '#deactivate!' do
+  it 'deactivates a plush' do
+    pg = double(PG::Connection)
+    data = [{ 'id' => 1, 'name' => 'test', 'created_at' => Time.now }]
+    allow(pg).to receive(:exec).and_return(data)
+    allow(Moobooks::Database).to receive(:connect).and_yield(pg)
+    app = Moobooks::Plush.new(1)
+    expect(app.deactivate!).to be nil
+  end
+end
+
+describe Moobooks::Twitter::App, '#activate?' do
+  it 'deactivates a plush' do
+    pg = double(PG::Connection)
+    data = [{ 'id' => 1, 'name' => 'test', 'is_active' => false }]
+    allow(pg).to receive(:exec).and_return(data)
+    allow(Moobooks::Database).to receive(:connect).and_yield(pg)
+    app = Moobooks::Plush.new(1)
+    expect(app.active?).to be false
   end
 end

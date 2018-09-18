@@ -96,6 +96,12 @@ when %w[plush activate]
   plush = Moobooks::Plush.new(plush)
   plush.activate!
   puts "Activated plush \"#{plush.name}\"."
+when %w[plush deactivate]
+  plush = ARGV.shift
+  plush = plush.to_i if plush.match?(/^\d+$/)
+  plush = Moobooks::Plush.new(plush)
+  plush.deactivate!
+  puts "Deactivated plush \"#{plush.name}\"."
 else
   warn "Unknown command: #{cmd.join(' ')}"
   print_help

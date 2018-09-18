@@ -102,7 +102,28 @@ module Moobooks
       Moobooks::Database.connect do |pg|
         pg.exec('UPDATE plushies SET is_active = TRUE WHERE id = $1;', [@id])
       end
+      @active = true
       nil
+    end
+
+    # @author Maxine Michalski
+    #
+    # Deactivate current toy
+    def deactivate!
+      Moobooks::Database.connect do |pg|
+        pg.exec('UPDATE plushies SET is_active = FALSE WHERE id = $1;', [@id])
+      end
+      @active = false
+      nil
+    end
+
+    # @author Maxine Michalski
+    #
+    # Shows if a plush is active or not
+    #
+    # @return [Boolean] Activation status of plush
+    def active?
+      @active
     end
   end
 end
