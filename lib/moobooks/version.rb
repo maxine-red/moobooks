@@ -26,4 +26,7 @@ module Moobooks
   PATCH = 0
   NAME = 'moobooks'
   VERSION = "#{MAJOR}.#{MINOR}.#{PATCH}"
+  DESCRIPTION = 'A framework and CLI to create and manage ebook '\
+                "accounts.\nKeep in mind that actual accounts need to "\
+                'be created manually, but can be linked with this tool.'
 end

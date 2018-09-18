@@ -17,7 +17,16 @@
 # You should have received a copy of the GNU General Public License
 # along with MooBooks.  If not, see <http://www.gnu.org/licenses/>.
 
-require 'twitter'
+require 'oauth2'
 
-require_relative 'twitter/app'
-require_relative 'twitter/account'
+module Moobooks
+  module Twitter
+    class AccountNotFound < StandardError; end
+    # @author Maxine Michalski
+    # @since 0.1.0
+    #
+    # A class to handle Twitter accounts
+    class Account
+    end
+  end
+end

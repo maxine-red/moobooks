@@ -17,7 +17,21 @@
 # You should have received a copy of the GNU General Public License
 # along with MooBooks.  If not, see <http://www.gnu.org/licenses/>.
 
-require 'twitter'
+describe Moobooks::Twitter::Account, '.authorize' do
+  it 'returns an authorization url and request token' do
+    # actually mock and stuff
+  end
+end
 
-require_relative 'twitter/app'
-require_relative 'twitter/account'
+describe Moobooks::Twitter::Account, '.tokenize' do
+  it 'takes a pin and authentication token and returns an access token' do
+    # mock and stuff
+  end
+end
+
+describe Moobooks::Twitter::Account, '.create' do
+  it 'takes a Twitter::User object and '\
+    'creates a new account entry in database' do
+    # mock and stuff
+  end
+end

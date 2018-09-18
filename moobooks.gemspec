@@ -6,9 +6,7 @@ Gem::Specification.new do |gem|
   gem.version       = Moobooks::VERSION
   gem.date          = Time.now.strftime('%F')
   gem.summary       = 'Mooing bots for your friends.'
-  gem.description   = 'A framework and CLI to create and manage ebook '\
-                      "accounts.\nKeep in mind that actual accounts need to "\
-                      'be created manually, but can be linked with this tool.'
+  gem.description   = Moobooks::DESCRIPTION
   gem.author        = 'Maxine Michalski'
   gem.email         = 'maxine@furfind.net'
   gem.files         = Dir['lib/**/*.rb']
@@ -28,6 +26,7 @@ Gem::Specification.new do |gem|
   gem.add_runtime_dependency 'json', '~> 2.0'
   gem.add_runtime_dependency 'mastodon', '~> 0.1'
   gem.add_runtime_dependency 'moo_ebooks', '~> 1.0'
+  gem.add_runtime_dependency 'oauth2', '~> 1.4'
   gem.add_runtime_dependency 'pg', '~> 1.0'
   gem.add_runtime_dependency 'twitter', '~> 6.0'
 end

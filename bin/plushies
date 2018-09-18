@@ -33,7 +33,8 @@ def print_help(help_param = false)
        '  plushies plush allow reblogging <plush>',
        '  plushies plush allow favoriting <plush>',
        '  plushies plush disallow favoriting <plush>',
-       '  plushies plush engine <plush_is> [<rng|markov>]'
+       '  plushies plush engine <plush_is> [<rng|markov>]',
+       '  plushies account auth <twitter|mastodon> <app_id>'
   exit(help_param ? 0 : 1)
 end
 # rubocop:enable MethodLength
@@ -87,9 +88,6 @@ when %w[plush add]
 when %w[plush list]
   plushies = Moobooks::Plush.list.map(&:to_s).map { |a| "  #{a}" }
   puts 'Registered plushies', plushies
-#       '  plushies plush activate <plush_id>',
-#       '  plushies plush allow favoriting <plush_id>',
-#       '  plushies plush allow reblogging <plush_id>',
 when %w[plush activate]
   plush = ARGV.shift
   plush = plush.to_i if plush.match?(/^\d+$/)
@@ -102,6 +100,40 @@ when %w[plush deactivate]
   plush = Moobooks::Plush.new(plush)
   plush.deactivate!
   puts "Deactivated plush \"#{plush.name}\"."
+when %w[account auth]
+  case platform = ARGV.shift
+  when 'twitter'
+    app = Moobooks::Twitter::App.new(ARGV.shift.to_i)
+    auth_url, request = Moobooks::Twitter::Account.authorize(app)
+    # consumer = OAuth2::Client.new(app.consumer_key, app.consumer_secret,
+    #                             site: 'https://twitter.com', scheme: :header)
+    # request_token = consumer.get_request_token
+    # auth_url = request_token.authorize_url
+    puts 'Please put this url into your browser:', auth_url
+    loop do
+      print 'Please enter your pin: '
+      pin = $stdin.gets.chomp.to_i
+      if pin.positive?
+        token = Moobooks::Twitter::Account.tokenize(pin, request)
+        break
+      end
+
+      warn 'Pleae enter a valid pin'
+    end
+
+    # token = request_token.get_access_token(oauth_verifier: pin)
+
+    # client = Twitter::REST::Client.new do |c|
+    # c.consumer_key = app.consumer_key
+    # c.consumer_secret = app.consumer_secret
+    # c.access_token = token.token
+    # c.access_token_secret = token.secret
+    # end
+    Moobooks::Twitter::Account.create(client.user)
+  else
+    warn "Unrecognized platform: #{platform}"
+    print_help
+  end
 else
   warn "Unknown command: #{cmd.join(' ')}"
   print_help

@@ -3,6 +3,14 @@ BEGIN;
   DROP SCHEMA IF EXISTS twitter CASCADE;
   CREATE SCHEMA mastodon;
   CREATE SCHEMA twitter;
+  DROP TABLE IF EXISTS database_version;
+  CREATE TABLE database_version (
+    id SERIAL PRIMARY KEY,
+    major SMALLINT NOT NULL,
+    minor SMALLINT NOT NULL,
+    patch SMALLINT NOT NULL
+  );
+  INSERT INTO database_version (major, minor, patch) VALUES (0,1,0);
   DROP TABLE IF EXISTS plushies;
   CREATE TABLE plushies (
     id SERIAL PRIMARY KEY,
