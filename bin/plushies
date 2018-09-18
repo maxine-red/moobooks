@@ -20,15 +20,22 @@
 
 require_relative '../lib/moobooks'
 
-def print_help
-  puts 'Usage: `plushies <app|account> <command> [<arguments>]',
-       '  plushies app add <twitter|mastoon> [app_name]'
-  '  plushies app list <twitter|mastoon>'
+def print_help(help_param = false)
+  puts 'Usage:',
+       '  plushies app add <twitter|mastoon> [app_name]',
+       '  plushies app list <twitter|mastoon>',
+       '  plushies plush add <name> <rng|markov>',
+       '  plushies plush list',
+       '  plushies plush allow favoriting <plush_id>',
+       '  plushies plush allow reblogging <plush_id>',
+       '  plushies plush activate <plush_id>',
+       '  plushies plush engine <plush_is> <rng|markov>'
+  exit(help_param ? 0 : 1)
 end
 
 case cmd = ARGV.shift(2)
 when ['-h']
-  print_help
+  print_help(true)
 when %w[app add]
   platform = ARGV.shift
   name = ARGV.shift
@@ -45,8 +52,7 @@ when %w[app add]
     Moobooks::Mastodon::App.create(name)
   else
     warn "Unrecognized platform: #{platform}"
-    print_add_help
-    exit 1
+    print_help
   end
   puts 'Your app was successfully saved.'
 when %w[app list]
@@ -60,8 +66,22 @@ when %w[app list]
   else
     warn "Unrecognized platform: #{platform}"
     print_help
-    exit 1
   end
+when %w[plush add]
+  name, engine = ARGV.shift(2)
+  unless %w[rng markov].include?(engine)
+    warn "Unknown engine type: #{engine}"
+    print_help
+  end
+  if name.empty?
+    warn 'Name can\'t be empty!'
+    print_help
+  end
+  Moobooks::Plush.create(name, engine)
+  puts "Added new plush \"#{name}\" to database."
+when %w[plush list]
+  plushies = Moobooks::Plush.list.map(&:to_s).map { |a| "  #{a}" }
+  puts 'Registered plushies', plushies
 # when 'update'
 # when 'post'
 # when 'profile'
@@ -71,5 +91,4 @@ when %w[app list]
 else
   warn "Unknown command: #{cmd.join(' ')}"
   print_help
-  exit 1
 end

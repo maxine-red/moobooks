@@ -7,6 +7,10 @@ BEGIN;
   CREATE TABLE plushies (
     id SERIAL PRIMARY KEY,
     name TEXT NOT NULL,
+    engine TEXT NOT NULL DEFAULT 'rng',
+    is_active BOOLEAN NOT NULL DEFAULT FALSE,
+    can_favorite BOOLEAN NOT NULL DEFAULT FALSE,
+    can_reblog BOOLEAN NOT NULL DEFAULT FALSE,
     created_at timestamp with time zone NOT NULL DEFAULT CURRENT_TIMESTAMP(0)
   );
   CREATE TABLE twitter.apps (
@@ -29,8 +33,17 @@ BEGIN;
     biography TEXT,
     location TEXT,
     homepage TEXT,
+    access_token TEXT,
+    access_token_secret TEXT,
     created_at timestamp with time zone NOT NULL DEFAULT CURRENT_TIMESTAMP(0),
     updated_at timestamp with time zone NOT NULL DEFAULT CURRENT_TIMESTAMP(0)
+  );
+  CREATE TABLE twitter.plush_owners (
+    account_id BIGINT NOT NULL REFERENCES twitter.accounts(id)
+    ON UPDATE CASCADE ON DELETE CASCADE,
+    plush_id INTEGER NOT NULL REFERENCES plushies(id)
+    ON UPDATE CASCADE ON DELETE CASCADE,
+    PRIMARY KEY (account_id, plush_id)
   );
   CREATE TABLE twitter.statuses (
     id BIGINT PRIMARY KEY,

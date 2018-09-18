@@ -17,9 +17,4 @@
 # You should have received a copy of the GNU General Public License
 # along with MooBooks.  If not, see <http://www.gnu.org/licenses/>.
 
-require 'json'
-
-require_relative 'moobooks/twitter'
-require_relative 'moobooks/mastodon'
-require_relative 'moobooks/database'
-require_relative 'moobooks/plush'
+require 'mastodon'
