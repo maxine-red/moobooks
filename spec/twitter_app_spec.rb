@@ -58,3 +58,47 @@ describe Moobooks::Twitter::App, '#to_s' do
     expect(app.to_s).to eq '1 test'
   end
 end
+
+describe Moobooks::Twitter::App, '#id' do
+  it 'returns app id' do
+    pg = double(PG::Connection)
+    data = [{ 'id' => 1, 'name' => 'test' }]
+    expect(pg).to receive(:exec).and_return(data)
+    expect(Moobooks::Database).to receive(:connect).and_yield(pg)
+    app = Moobooks::Twitter::App.new(1)
+    expect(app.id).to be_an Integer
+  end
+end
+
+describe Moobooks::Twitter::App, '#name' do
+  it 'returns app name' do
+    pg = double(PG::Connection)
+    data = [{ 'id' => 1, 'name' => 'test' }]
+    expect(pg).to receive(:exec).and_return(data)
+    expect(Moobooks::Database).to receive(:connect).and_yield(pg)
+    app = Moobooks::Twitter::App.new(1)
+    expect(app.name).to be_a String
+  end
+end
+
+describe Moobooks::Twitter::App, '#consumer_key' do
+  it 'returns consumer key of app' do
+    pg = double(PG::Connection)
+    data = [{ 'id' => 1, 'name' => 'test', 'consumer_key' => 't' }]
+    expect(pg).to receive(:exec).and_return(data)
+    expect(Moobooks::Database).to receive(:connect).and_yield(pg)
+    app = Moobooks::Twitter::App.new(1)
+    expect(app.consumer_key).to be_a String
+  end
+end
+
+describe Moobooks::Twitter::App, '#consumer_secret' do
+  it 'returns consumer secret of app' do
+    pg = double(PG::Connection)
+    data = [{ 'id' => 1, 'name' => 'test', 'consumer_secret' => 't' }]
+    expect(pg).to receive(:exec).and_return(data)
+    expect(Moobooks::Database).to receive(:connect).and_yield(pg)
+    app = Moobooks::Twitter::App.new(1)
+    expect(app.consumer_secret).to be_a String
+  end
+end

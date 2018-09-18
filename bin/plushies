@@ -19,19 +19,24 @@
 # along with MooBooks.  If not, see <http://www.gnu.org/licenses/>.
 
 require_relative '../lib/moobooks'
-
+# rubocop:disable MethodLength
 def print_help(help_param = false)
   puts 'Usage:',
        '  plushies app add <twitter|mastoon> [app_name]',
        '  plushies app list <twitter|mastoon>',
        '  plushies plush add <name> <rng|markov>',
        '  plushies plush list',
-       '  plushies plush allow favoriting <plush_id>',
-       '  plushies plush allow reblogging <plush_id>',
-       '  plushies plush activate <plush_id>',
-       '  plushies plush engine <plush_is> <rng|markov>'
+       '  plushies plush activate <plush>',
+       '  plushies plush deactivate <plush>',
+       '  plushies plush allow favoriting <plush>',
+       '  plushies plush disallow favoriting <plush>',
+       '  plushies plush allow reblogging <plush>',
+       '  plushies plush allow favoriting <plush>',
+       '  plushies plush disallow favoriting <plush>',
+       '  plushies plush engine <plush_is> [<rng|markov>]'
   exit(help_param ? 0 : 1)
 end
+# rubocop:enable MethodLength
 
 case cmd = ARGV.shift(2)
 when ['-h']
@@ -82,12 +87,15 @@ when %w[plush add]
 when %w[plush list]
   plushies = Moobooks::Plush.list.map(&:to_s).map { |a| "  #{a}" }
   puts 'Registered plushies', plushies
-# when 'update'
-# when 'post'
-# when 'profile'
-# when 'follow'
-# when 'favorite'
-# when 'read'
+#       '  plushies plush activate <plush_id>',
+#       '  plushies plush allow favoriting <plush_id>',
+#       '  plushies plush allow reblogging <plush_id>',
+when %w[plush activate]
+  plush = ARGV.shift
+  plush = plush.to_i if plush.match?(/^\d+$/)
+  plush = Moobooks::Plush.new(plush)
+  plush.activate!
+  puts "Activated plush \"#{plush.name}\"."
 else
   warn "Unknown command: #{cmd.join(' ')}"
   print_help

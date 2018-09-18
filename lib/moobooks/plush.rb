@@ -25,6 +25,18 @@ module Moobooks
   #
   # Plushies!
   class Plush
+    # @return [integer] ID of current plush
+    attr_reader :id
+
+    # return [String] Name of current toy
+    attr_reader :name
+
+    # return [String] Engine this plush is running on
+    attr_reader :engine
+
+    # @return [Time] Time of creation for current toy
+    attr_reader :created_at
+
     # @author Maxine Michalski
     #
     # Class method to create Plushies in database
@@ -81,6 +93,16 @@ module Moobooks
       "#{@id} #{@name} #{@engine} | #{@active ? 'active' : 'not active'}"\
       " | #{@favorite ? 'can favorite' : 'can\'t favorite'}"\
       " | #{@reblog ? 'can reblog' : 'can\'t reblog'}"
+    end
+
+    # @author Maxine Michalski
+    #
+    # Activate current toy
+    def activate!
+      Moobooks::Database.connect do |pg|
+        pg.exec('UPDATE plushies SET is_active = TRUE WHERE id = $1;', [@id])
+      end
+      nil
     end
   end
 end

@@ -65,3 +65,58 @@ describe Moobooks::Twitter::App, '#to_s' do
     )
   end
 end
+
+describe Moobooks::Twitter::App, '#id' do
+  it 'returns id of plush' do
+    pg = double(PG::Connection)
+    data = [{ 'id' => 1, 'name' => 'test', 'engine' => 'rng' }]
+    expect(pg).to receive(:exec).and_return(data)
+    expect(Moobooks::Database).to receive(:connect).and_yield(pg)
+    app = Moobooks::Plush.new(1)
+    expect(app.id).to be_an Integer
+  end
+end
+
+describe Moobooks::Twitter::App, '#name' do
+  it 'returns name of plush' do
+    pg = double(PG::Connection)
+    data = [{ 'id' => 1, 'name' => 'test', 'engine' => 'rng' }]
+    expect(pg).to receive(:exec).and_return(data)
+    expect(Moobooks::Database).to receive(:connect).and_yield(pg)
+    app = Moobooks::Plush.new(1)
+    expect(app.name).to be_a String
+  end
+end
+
+describe Moobooks::Twitter::App, '#engine' do
+  it 'returns engine of plush' do
+    pg = double(PG::Connection)
+    data = [{ 'id' => 1, 'name' => 'test', 'engine' => 'rng' }]
+    expect(pg).to receive(:exec).and_return(data)
+    expect(Moobooks::Database).to receive(:connect).and_yield(pg)
+    app = Moobooks::Plush.new(1)
+    expect(app.engine).to be_a String
+  end
+end
+
+describe Moobooks::Twitter::App, '#created_at' do
+  it 'returns creation time of plush' do
+    pg = double(PG::Connection)
+    data = [{ 'id' => 1, 'name' => 'test', 'created_at' => Time.now }]
+    expect(pg).to receive(:exec).and_return(data)
+    expect(Moobooks::Database).to receive(:connect).and_yield(pg)
+    app = Moobooks::Plush.new(1)
+    expect(app.created_at).to be_a Time
+  end
+end
+
+describe Moobooks::Twitter::App, '#activate' do
+  it 'activates a plush' do
+    pg = double(PG::Connection)
+    data = [{ 'id' => 1, 'name' => 'test', 'created_at' => Time.now }]
+    allow(pg).to receive(:exec).and_return(data)
+    allow(Moobooks::Database).to receive(:connect).and_yield(pg)
+    app = Moobooks::Plush.new(1)
+    expect(app.activate!).to be nil
+  end
+end
