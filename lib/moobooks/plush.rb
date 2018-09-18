@@ -40,6 +40,11 @@ module Moobooks
     # @author Maxine Michalski
     #
     # Class method to create Plushies in database
+    #
+    # @param name [String] Name of new plush
+    # @param engine [String] Engine the plush is running on
+    #
+    # @notice Engine can be `rng` or `markov` only.
     def self.create(name, engine)
       raise ArgumentError, 'Name can\'t be empty~' if name.empty?
       raise UnsupportedEngineError unless %w[rng markov].include?(engine)
