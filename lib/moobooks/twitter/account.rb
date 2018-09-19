@@ -17,7 +17,7 @@
 # You should have received a copy of the GNU General Public License
 # along with MooBooks.  If not, see <http://www.gnu.org/licenses/>.
 
-require 'oauth2'
+require 'oauth'
 
 module Moobooks
   module Twitter
@@ -27,6 +27,23 @@ module Moobooks
     #
     # A class to handle Twitter accounts
     class Account
+      # @author Maxine Michalski
+      #
+      # Create a new entry for a Twitter account
+      #
+      # @param user [Twitter::User] User information for account
+      def self.create(user)
+        Moobooks::Database.connect do |pg|
+          pg.exec('INSERT INTO twitter.accounts (id, screen_name, '\
+                  'display_name, biography, location, '\
+                  'homepage, created_at) VALUES ($1, $2, $3, $4, $5, $6, '\
+                  '$7);',
+                  [user.id, user.screen_name, user.name,
+                   user.description, user.location, user.website.to_s,
+                   user.created_at])
+        end
+        nil
+      end
     end
   end
 end

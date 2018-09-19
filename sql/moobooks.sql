@@ -36,8 +36,6 @@ BEGIN;
     ON UPDATE CASCADE ON DELETE SET NULL,
     screen_name TEXT NOT NULL,
     display_name TEXT,
-    avatar TEXT,
-    banner TEXT,
     biography TEXT,
     location TEXT,
     homepage TEXT,

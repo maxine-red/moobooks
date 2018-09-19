@@ -34,7 +34,8 @@ def print_help(help_param = false)
        '  plushies plush allow favoriting <plush>',
        '  plushies plush disallow favoriting <plush>',
        '  plushies plush engine <plush_is> [<rng|markov>]',
-       '  plushies account auth <twitter|mastodon> <app_id>'
+       '  plushies account auth <twitter|mastodon> <app_id>',
+       '  plushies account create <twitter|mastodon> <app_id> <account_name>'
   exit(help_param ? 0 : 1)
 end
 # rubocop:enable MethodLength
@@ -100,6 +101,24 @@ when %w[plush deactivate]
   plush = Moobooks::Plush.new(plush)
   plush.deactivate!
   puts "Deactivated plush \"#{plush.name}\"."
+when %w[account create]
+  case platform = ARGV.shift
+  when 'twitter'
+    app = Moobooks::Twitter::App.new(ARGV.shift.to_i)
+    client = Twitter::REST::Client.new(consumer_key: app.consumer_key,
+                                       consumer_secret: app.consumer_secret)
+    username = ARGV.shift
+    if username.nil? || username.empty?
+      warn 'Username can\'t be empty!'
+      exit 1
+    end
+    user = client.user(ARGV.shift)
+    Moobooks::Twitter::Account.create(user)
+    puts "Created an account for \"#{user.name}\" in database."
+  else
+    warn "Unrecognized platform: #{platform}"
+    print_help
+  end
 when %w[account auth]
   case platform = ARGV.shift
   when 'twitter'

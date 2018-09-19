@@ -32,6 +32,13 @@ end
 describe Moobooks::Twitter::Account, '.create' do
   it 'takes a Twitter::User object and '\
     'creates a new account entry in database' do
-    # mock and stuff
+    u = Twitter::User.new(id: 1, screen_name: 't', name: 't',
+                          description: 't', location: 't',
+                          homepage: 'http://example.org',
+                          created_at: Time.now.to_s)
+    pg = double(PG::Connection)
+    expect(pg).to receive(:exec).and_return(true)
+    expect(Moobooks::Database).to receive(:connect).and_yield(pg)
+    expect(Moobooks::Twitter::Account.create(u)).to be nil
   end
 end
