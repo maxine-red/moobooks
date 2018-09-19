@@ -123,32 +123,35 @@ when %w[account auth]
   case platform = ARGV.shift
   when 'twitter'
     app = Moobooks::Twitter::App.new(ARGV.shift.to_i)
-    auth_url, request = Moobooks::Twitter::Account.authorize(app)
-    # consumer = OAuth2::Client.new(app.consumer_key, app.consumer_secret,
-    #                             site: 'https://twitter.com', scheme: :header)
-    # request_token = consumer.get_request_token
-    # auth_url = request_token.authorize_url
-    puts 'Please put this url into your browser:', auth_url
+    request = Moobooks::Twitter::Account.authorize(app)
+    puts 'Please put this url into your browser:', request.authorize_url
+    `firefox #{request.authorize_url}`
     loop do
       print 'Please enter your pin: '
-      pin = $stdin.gets.chomp.to_i
-      if pin.positive?
-        token = Moobooks::Twitter::Account.tokenize(pin, request)
+      pin = $stdin.gets.chomp
+      if pin.match?(/^\d+$/)
+        token = request.get_access_token(oauth_verifier: pin)
+        client = Twitter::REST::Client.new do |c|
+         c.consumer_key = app.consumer_key
+         c.consumer_secret = app.consumer_secret
+         c.access_token = token.token
+         c.access_token_secret = token.secret
+        end
+        begin
+          Moobooks::Twitter::Account.create(client.user)
+        rescue PG::UniqueViolation
+          warn 'User already exists.'
+        end
+        acc = Moobooks::Twitter::Account.new(client.user.screen_name)
+        acc.app = app
+        acc.access_token = token.token
+        acc.access_token_secret = token.secret
+        puts "Authorized user \"#{client.user.name}\" to #{app.name}"
         break
       end
 
       warn 'Pleae enter a valid pin'
     end
-
-    # token = request_token.get_access_token(oauth_verifier: pin)
-
-    # client = Twitter::REST::Client.new do |c|
-    # c.consumer_key = app.consumer_key
-    # c.consumer_secret = app.consumer_secret
-    # c.access_token = token.token
-    # c.access_token_secret = token.secret
-    # end
-    Moobooks::Twitter::Account.create(client.user)
   else
     warn "Unrecognized platform: #{platform}"
     print_help
