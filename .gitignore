@@ -25,6 +25,3 @@
 
 # Ignore simplecov directory
 /coverage/
-
-# Ignore Gemfile.lock to make travis happy
-Gemfile.lock

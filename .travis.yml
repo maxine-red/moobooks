@@ -3,21 +3,13 @@ env:
   - CC_TEST_REPORTER_ID=dd66dc3f2790f27b58503215edb5e2e028e051933c6756d7a223cf6f46609230
 language: ruby
 rvm:
-  - 2.3
+  - 2.3.3
 services:
   - postgresql
-deploy:
-  provider: rubygems
-  api_key:
-    secure: PQwtuAvQqyvtf1ZhIBbLl0lxh1BV7aO2CCuv35/N1HNla0rLf3jSYxTwaIRwIGJqIPYXSU9SGd74qLzP1L2R1Sapp3dwq2CLvTrhEjgcqS+hHXcu8ip+OdsVO1w/M/Oexzq634boAqlWrUsizxmM7eFKX9Xbrj2XLSLBsL5Fhf1IBF49GTclrsYXVH3WS7okq957jRo1c8YGCKEaOGFVdpcp9yr2ltuMF1XwNk2kCMaJJR46aAadqgBmNiFinmajqvQ4+xgvTJDBle//eNMOUjntUd3NVuOEiDNYbxAWv2k1NCFo8NiZHUXQPagFFL+5ORqhd99OQ4fRSjY+6GVL/nT7R9mF84O9xafWc1PolwIA0amunY64Bfe9QlR7UyUXe8Onh6C+yADfOCywM/3ZPxZFQOsjj3Ui7rZZFzYBDtrfzdGo0mUPPMucAUp/GbrUjaWnQwGT52CJMFWCpMRLVLotsj2FwvRaJEV64kLyP+Jug6LLkT2oLUvXEh+Uuq3Bde2XpX5SK+gs3TPqgQGmGQFRtBKG6On1Lf8pXeTx3BC7GdH99t3Kmj7rtU3o0HUYttIP3fGd2JB5+60vm6QsMV6sj/RcQgsm8yogkTvF7j6jHFiXYrEriFeWkM7wQ4FIdtLCNAoLP7yeLXicOIRI3VORIzU1lMDSYBo2ny4YH/8=
-  on:
-    tags: true
 before_script:
   - curl -L https://codeclimate.com/downloads/test-reporter/test-reporter-latest-linux-amd64 > ./cc-test-reporter
   - chmod +x ./cc-test-reporter
   - "./cc-test-reporter before-build"
-  - 'psql -c "create database moobooks"'
-  - 'psql -f sql/moobooks.sql moobooks'
 script:
   - bundle exec rails test
 after_script:
