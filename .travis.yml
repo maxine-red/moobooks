@@ -19,6 +19,6 @@ before_script:
   - 'psql -c "create database moobooks"'
   - 'psql -f sql/moobooks.sql moobooks'
 script:
-  - bundle exec rspec
+  - bundle exec rails test
 after_script:
   - "./cc-test-reporter after-build --exit-code $TRAVIS_TEST_RESULT"
