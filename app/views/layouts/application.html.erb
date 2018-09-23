@@ -1,6 +1,9 @@
 <!DOCTYPE html>
-<html>
+<html lang='en'>
   <head>
+    <meta charset='utf-8'/>
+    <meta content='width=device-width, initial-scale=1' name='viewport'/>
+    <%= favicon_link_tag %>
     <title>Moobooks</title>
     <%= csrf_meta_tags %>
     <%= csp_meta_tag %>
@@ -10,6 +13,12 @@
   </head>
 
   <body>
+    <header>
+      <%= link_to(
+        image_tag('mootech_banner', size: "360x120", alt: "Mootech"), '/') %>
+    </header>
+    <main>
     <%= yield %>
+    </main>
   </body>
 </html>

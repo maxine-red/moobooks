@@ -11,5 +11,20 @@
  * It is generally better to create a new file per style scope.
  *
  *= require_tree .
+ *= require ./themes/mootech.scss
  *= require_self
  */
+
+@import 'themes/mootech';
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  background-color: $primary_color;
+  color: $font_color;
+  text-align: center;
+}
