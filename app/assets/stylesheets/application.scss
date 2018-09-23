@@ -24,7 +24,7 @@
 }
 
 a {
-  color: darken($font_color, 10%);
+  color: darken($font_color, 5%);
   text-decoration: none;
 }
 
@@ -45,6 +45,20 @@ header {
     img {
       max-width: 100%;
       height: auto;
+    }
+  }
+  nav {
+    background-color: lighten($secondary_color, 7%);
+    border-top: 3px solid lighten(saturate($primary_color, 10%), 30%);
+    font-size: 0;
+    a {
+      background-color: darken($secondary_color, 0%);
+      padding: 12px;
+      display: inline-block;
+      font-size: 15px;
+      &.active {
+        background-color: darken($secondary_color, 7%);
+      }
     }
   }
 }

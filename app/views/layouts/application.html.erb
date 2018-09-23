@@ -18,6 +18,12 @@
         <%= link_to(
           image_tag('mootech_banner', size: "360x120", alt: "Mootech"), '/') %>
       </h1>
+      <nav>
+        <%= link_to 'Home', root_path,
+          class: current_path?(root_path) %>
+        <%= link_to 'Users', users_path,
+          class: current_path?(users_path) %>
+      </nav>
     </header>
     <main>
 <%= yield %>    </main>
