@@ -14,11 +14,24 @@
 
   <body>
     <header>
-      <%= link_to(
-        image_tag('mootech_banner', size: "360x120", alt: "Mootech"), '/') %>
+      <h1>
+        <%= link_to(
+          image_tag('mootech_banner', size: "360x120", alt: "Mootech"), '/') %>
+      </h1>
     </header>
     <main>
-    <%= yield %>
-    </main>
+<%= yield %>    </main>
+    <footer>
+      <section id='art_copyright'>
+        Artwork &copy; 2017
+        <a href='https://www.furaffinity.net/user/ulvra' target='_blank'>
+          Ulvra
+        </a>
+      </section>
+      <section id='privacy_notice'>
+        <a href='/terms_of_service/'> Terms of Service </a> |
+        <a href='/privacy_policy/'> Privacy Policy </a>
+      </section>
+    </footer>
   </body>
 </html>
