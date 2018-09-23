@@ -20,6 +20,7 @@ ActiveRecord::Schema.define(version: 2018_09_22_084622) do
     t.text "pronouns", default: "they/them/theirs", null: false
     t.text "description"
     t.text "email"
+    t.text "level", default: "user", null: false
     t.text "icon"
     t.text "banner"
     t.datetime "created_at", null: false
