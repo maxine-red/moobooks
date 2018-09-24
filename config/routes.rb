@@ -3,8 +3,8 @@ Rails.application.routes.draw do
   get 'welcome/index'
 
   resources :users
-  get '/signin', to: 'users#signin'
-  get '/signup', to: 'users#signup'
+  get '/login', to: 'users#signin'
+  get '/register', to: 'users#signup'
   # Error routing
   get '/403', to: 'errors#permission_denied'
   get '/404', to: 'errors#not_found'
