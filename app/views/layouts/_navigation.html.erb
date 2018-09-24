@@ -1,0 +1,8 @@
+      <nav>
+        <%= link_to 'Home', root_path,
+          class: current_path?(root_path) %>
+        <%= link_to 'Signin', signin_path,
+          class: current_path?(signin_path) %>
+        <%= link_to 'Signup', signup_path,
+          class: current_path?(signup_path) %>
+      </nav>

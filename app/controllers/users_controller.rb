@@ -61,6 +61,12 @@ class UsersController < ApplicationController
     end
   end
 
+  def signin
+  end
+
+  def signup
+  end
+
   private
     # Use callbacks to share common setup or constraints between actions.
     def set_user
