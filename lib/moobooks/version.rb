@@ -22,7 +22,7 @@
 # @since 0.1.0
 module Moobooks
   MAJOR = 0
-  MINOR = 1
+  MINOR = 2
   PATCH = 0
   NAME = 'moobooks'
   VERSION = "#{MAJOR}.#{MINOR}.#{PATCH}"
