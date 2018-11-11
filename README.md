@@ -15,7 +15,7 @@ Coverage](https://api.codeclimate.com/v1/badges/91b4b0323102f6e63501/test_covera
 Create your own little plush friends! This gem aims to create plushies, that can
 post to social media accounts. Only text is supported.
 
-This plushies are meant to run by a cronjob.
+These plushies are meant to run by a cronjob.
 
 ## Installation
 

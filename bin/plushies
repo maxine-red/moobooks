@@ -19,144 +19,92 @@
 # along with MooBooks.  If not, see <http://www.gnu.org/licenses/>.
 
 require_relative '../lib/moobooks'
-# rubocop:disable MethodLength
+
+require 'logger'
+
 def print_help(help_param = false)
   puts 'Usage:',
-       '  plushies app add <twitter|mastoon> [app_name]',
-       '  plushies app list <twitter|mastoon>',
-       '  plushies plush add <name> <rng|markov>',
-       '  plushies plush list',
-       '  plushies plush activate <plush>',
-       '  plushies plush deactivate <plush>',
-       '  plushies plush allow favoriting <plush>',
-       '  plushies plush disallow favoriting <plush>',
-       '  plushies plush allow reblogging <plush>',
-       '  plushies plush allow favoriting <plush>',
-       '  plushies plush disallow favoriting <plush>',
-       '  plushies plush engine <plush_is> [<rng|markov>]',
-       '  plushies account auth <twitter|mastodon> <app_id>',
-       '  plushies account create <twitter|mastodon> <app_id> <account_name>'
+       '  plushies post',
+       '  plushies update'
   exit(help_param ? 0 : 1)
 end
-# rubocop:enable MethodLength
 
-case cmd = ARGV.shift(2)
+app_config = File.expand_path("#{__dir__}/../config/apps.json")
+unless File.exist?(app_config)
+  warn 'No app configuration present!'
+  exit 1
+end
+
+log = Logger.new(File.expand_path("#{__dir__}/../log/plushies.log"), 'monthly')
+log.level = Logger::INFO
+log.formatter = proc do |sev, date, _prog, msg|
+  "#{date.strftime('%b %e, %Y %e %r')} [#{sev[0, 1].upcase}]: #{msg}\n"
+end
+
+apps = JSON.parse(File.read(app_config), symbolize_names: true)
+
+plush_config = File.expand_path("#{__dir__}/../config/plushies.json")
+unless File.exist?(plush_config)
+  warn 'No plush configuration present!'
+  exit 1
+end
+plush_configs = JSON.parse(File.read(plush_config), symbolize_names: true)
+
+cmd = ARGV.shift
+
+plushies = ARGV.map do |name|
+  conf = plush_configs[name.to_sym]
+  if conf.nil?
+    warn "Plush \"#{name}\" not known"
+    log.warn "Plush \"#{name}\" not known"
+    next
+  end
+  Moobooks::Plush.new(name, conf, apps)
+end.compact
+
+case cmd
 when ['-h']
   print_help(true)
-when %w[app add]
-  platform = ARGV.shift
-  name = ARGV.shift
-  warn 'Name can\'t be empty.' if name.nil?
-  case platform
-  when 'twitter'
-    puts 'Please check your app\'s developer page to get it\'s data.'
-    print 'Consumer key: '
-    consumer_key = $stdin.gets.chomp
-    print 'Consumer secret: '
-    consumer_secret = $stdin.gets.chomp
-    Moobooks::Twitter::App.create(name, consumer_key, consumer_secret)
-  when 'mastodon'
-    Moobooks::Mastodon::App.create(name)
-  else
-    warn "Unrecognized platform: #{platform}"
-    print_help
+when 'post'
+  plushies.each do |plush|
+    log.info "Plush \"#{plush.name}\" said: \"#{plush.post_status!}\""
   end
-  puts 'Your app was successfully saved.'
-when %w[app list]
-  platform = ARGV.shift
-  case platform
-  when 'twitter'
-    apps = Moobooks::Twitter::App.list.map(&:to_s).map { |a| "  #{a}" }
-    puts 'Known twitter apps', apps
-  when 'mastodon'
-    Moobooks::Mastodon::App.create(name)
-  else
-    warn "Unrecognized platform: #{platform}"
-    print_help
-  end
-when %w[plush add]
-  name, engine = ARGV.shift(2)
-  unless %w[rng markov].include?(engine)
-    warn "Unknown engine type: #{engine}"
-    print_help
-  end
-  if name.empty?
-    warn 'Name can\'t be empty!'
-    print_help
-  end
-  Moobooks::Plush.create(name, engine)
-  puts "Added new plush \"#{name}\" to database."
-when %w[plush list]
-  plushies = Moobooks::Plush.list.map(&:to_s).map { |a| "  #{a}" }
-  puts 'Registered plushies', plushies
-when %w[plush activate]
-  plush = ARGV.shift
-  plush = plush.to_i if plush.match?(/^\d+$/)
-  plush = Moobooks::Plush.new(plush)
-  plush.activate!
-  puts "Activated plush \"#{plush.name}\"."
-when %w[plush deactivate]
-  plush = ARGV.shift
-  plush = plush.to_i if plush.match?(/^\d+$/)
-  plush = Moobooks::Plush.new(plush)
-  plush.deactivate!
-  puts "Deactivated plush \"#{plush.name}\"."
-when %w[account create]
-  case platform = ARGV.shift
-  when 'twitter'
-    app = Moobooks::Twitter::App.new(ARGV.shift.to_i)
-    client = Twitter::REST::Client.new(consumer_key: app.consumer_key,
-                                       consumer_secret: app.consumer_secret)
-    username = ARGV.shift
-    if username.nil? || username.empty?
-      warn 'Username can\'t be empty!'
-      exit 1
+when 'update'
+  plushies.each do |plush|
+    corpus = JSON.parse(File.read("#{__dir__}/../corpora/#{plush.name}.json"),
+                        symbolize_names: true).map do |t|
+      Twitter::Tweet.new(t)
     end
-    user = client.user(ARGV.shift)
-    Moobooks::Twitter::Account.create(user)
-    puts "Created an account for \"#{user.name}\" in database."
-  else
-    warn "Unrecognized platform: #{platform}"
-    print_help
-  end
-when %w[account auth]
-  case platform = ARGV.shift
-  when 'twitter'
-    app = Moobooks::Twitter::App.new(ARGV.shift.to_i)
-    request = Moobooks::Twitter::Account.authorize(app)
-    puts 'Please put this url into your browser:', request.authorize_url
-    `firefox #{request.authorize_url}`
-    loop do
-      print 'Please enter your pin: '
-      pin = $stdin.gets.chomp
-      if pin.match?(/^\d+$/)
-        token = request.get_access_token(oauth_verifier: pin)
-        client = Twitter::REST::Client.new do |c|
-         c.consumer_key = app.consumer_key
-         c.consumer_secret = app.consumer_secret
-         c.access_token = token.token
-         c.access_token_secret = token.secret
-        end
-        begin
-          Moobooks::Twitter::Account.create(client.user)
-        rescue PG::UniqueViolation
-          warn 'User already exists.'
-        end
-        acc = Moobooks::Twitter::Account.new(client.user.screen_name)
-        acc.app = app
-        acc.access_token = token.token
-        acc.access_token_secret = token.secret
-        puts "Authorized user \"#{client.user.name}\" to #{app.name}"
-        break
-      end
-
-      warn 'Pleae enter a valid pin'
+    max_id = 2**61
+    new_tweets = []
+    16.times do
+      new_tweets += plush.clients[:twitter].user_timeline(
+        plush.originals[:twitter], max_id: max_id, count: 200,
+                                   tweet_mode: 'extended'
+      )
+      log.info("Added #{new_tweets.count} tweets from "\
+               "\"#{plush.originals[:twitter]}\" to \"#{plush.name}\"")
+      max_id = new_tweets.min_by(&:id).id
+      break if max_id <= corpus.max_by(&:id).id
     end
-  else
-    warn "Unrecognized platform: #{platform}"
-    print_help
+    corpus = (corpus + new_tweets).reject(&:retweeted?).sort_by(&:id)
+                                  .map(&:attrs).uniq.reject do |t|
+      t[:full_text].match(/^(RT|MT)/)
+    end.to_json
+    File.write("#{__dir__}/../corpora/#{plush.name}.json", corpus)
+    corpus = JSON.parse(corpus, symbolize_names: true).map do |t|
+      t[:full_text]
+    end
+    corpus = {
+      statuses: corpus.reject { |t| t.match(/@\w+/) },
+      mentions: corpus.select { |t| t.match(/@\w+/) }
+    }
+    model = Ebooks::Model.new.consume(corpus).to_json
+    File.write("#{__dir__}/../models/#{plush.name}.json", model)
+    log.info("Updated model for \"#{plush.name}\" ")
   end
 else
   warn "Unknown command: #{cmd.join(' ')}"
+  log.warn "Unknown command: #{cmd.join(' ')}"
   print_help
 end

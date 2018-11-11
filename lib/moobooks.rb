@@ -19,7 +19,4 @@
 
 require 'json'
 
-require_relative 'moobooks/twitter'
-require_relative 'moobooks/mastodon'
-require_relative 'moobooks/database'
 require_relative 'moobooks/plush'
