@@ -52,22 +52,19 @@ plush_configs = JSON.parse(File.read(plush_config), symbolize_names: true)
 
 cmd = ARGV.shift
 
-plushies = ARGV.map do |name|
-  conf = plush_configs[name.to_sym]
-  if conf.nil?
-    warn "Plush \"#{name}\" not known"
-    log.warn "Plush \"#{name}\" not known"
-    next
-  end
+plushies = plush_configs.map do |name, conf|
   Moobooks::Plush.new(name, conf, apps)
-end.compact
+end
 
 case cmd
 when ['-h']
   print_help(true)
 when 'post'
-  plushies.each do |plush|
+  plushies.shuffle.each do |plush|
     log.info "Plush \"#{plush.name}\" said: \"#{plush.post_status!}\""
+    r = rand(300)
+    log.info("Sleeping for #{r} seconds.")
+    sleep r
   end
 when 'update'
   plushies.each do |plush|

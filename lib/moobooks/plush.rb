@@ -39,6 +39,7 @@ module Moobooks
     # @return [Hash] Names of original accounts
     attr_reader :originals
 
+    attr_reader :twitter_client
     # @author Maxine Michalski
     #
     # Initializer for Plushies
@@ -65,7 +66,7 @@ module Moobooks
     # Method to post statuses to all available social platforms
     def post_status!
       @status = @model.update(280)
-      # @twitter_client.update(@status) unless @twitter_client.nil?
+      @twitter_client.update(@status) unless @twitter_client.nil?
       @status
     end
 
