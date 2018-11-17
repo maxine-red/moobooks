@@ -62,7 +62,7 @@ when ['-h']
 when 'post'
   plushies.shuffle.each do |plush|
     log.info "Plush \"#{plush.name}\" said: \"#{plush.post_status!}\""
-    r = rand(300)
+    r = rand(150) + 60
     log.info("Sleeping for #{r} seconds.")
     sleep r
   end

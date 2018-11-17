@@ -22,8 +22,8 @@
 # @since 0.1.0
 module Moobooks
   MAJOR = 0
-  MINOR = 2
-  PATCH = 1
+  MINOR = 3
+  PATCH = 0
   NAME = 'moobooks'
   VERSION = "#{MAJOR}.#{MINOR}.#{PATCH}"
   DESCRIPTION = 'A framework and CLI to create and manage ebook '\
