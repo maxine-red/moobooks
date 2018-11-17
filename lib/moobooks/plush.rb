@@ -56,6 +56,7 @@ module Moobooks
       raise UnsupportedEngineError unless %w[rng markov].include?(@engine)
       @originals = {}
       twitter_login(apps, conf[:twitter]) unless conf[:twitter].nil?
+      add_dnp_words(conf)
       @model = Ebooks::Model.from_json(
         File.read("#{__dir__}/../../models/#{@name}.json")
       )
@@ -65,18 +66,25 @@ module Moobooks
     #
     # Method to post statuses to all available social platforms
     def post_status!
-      @status = @model.update(280)
-      @twitter_client.update(@status) unless @twitter_client.nil?
+      @status = 'trap'
+      @status = @model.update(280) while @status =~ /#{@bad_words.join('|')}/
+      @twitter_client&.update(@status)
       @status
     end
-
+    
     # @author Maxine Michalski
     #
     # Let's this plush reply to messages.
     #
     # @notice This can cause endless reply loops, use with caution!
     def reply!(status)
-      @status = @model.reply(status.text, 280)
+      return if replied?(status)
+      @status = 'trap'
+      while @status =~ /#{@bad_words.join('|')}/
+        @status = @model.reply(status.text, 200)
+      end
+      @twitter_client&.update("@#{status.user.screen_name} #{@status}",
+                              in_reply_to_status: status)
       @status
     end
 
@@ -92,6 +100,29 @@ module Moobooks
     end
 
     private
+
+    def replied?(status)
+      return true if Time.now - status.created_at > 900
+      if File.exist?("#{__dir__}/../../replies/#{@name}.json")
+        ids = JSON.parse(File.read("#{__dir__}/../../replies/#{@name}.json"))
+        replied = ids.include?(status.id)
+        unless replied
+          ids << status.id
+          ids = ids.to_json
+          File.write("#{__dir__}/../../replies/#{@name}.json", ids)
+        end
+        replied
+      else
+        ids = [status.id].to_json
+        File.write("#{__dir__}/../../replies/#{@name}.json", ids)
+        return false
+      end
+    end
+
+    def add_dnp_words(conf)
+      @bad_words = %w[swastika genocide behead trap dead death woadedfox]
+      @bad_words += conf[:dnp] unless conf[:dnp].nil?
+    end
 
     def twitter_login(apps, conf)
       app = apps[conf[:api].to_sym]

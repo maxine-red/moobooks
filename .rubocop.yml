@@ -1547,7 +1547,7 @@ Style/YodaCondition:
 Metrics/AbcSize:
   # The ABC size is a calculated magnitude, so this number can be an Integer or
   # a Float.
-  Max: 20
+  Max: 25
 
 Metrics/BlockLength:
   CountComments: false  # count full line comments?
@@ -1588,7 +1588,7 @@ Metrics/LineLength:
 
 Metrics/MethodLength:
   CountComments: false  # count full line comments?
-  Max: 10
+  Max: 15
 
 Metrics/ModuleLength:
   CountComments: false  # count full line comments?

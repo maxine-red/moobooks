@@ -21,6 +21,7 @@
 require_relative '../lib/moobooks'
 
 require 'logger'
+require 'thread'
 
 def print_help(help_param = false)
   puts 'Usage:',
@@ -62,10 +63,28 @@ when ['-h']
 when 'post'
   plushies.shuffle.each do |plush|
     log.info "Plush \"#{plush.name}\" said: \"#{plush.post_status!}\""
-    r = rand(150) + 60
+    r = rand(60..209)
     log.info("Sleeping for #{r} seconds.")
     sleep r
   end
+when 'reply'
+  mt = Mutex.new
+  threads = []
+  plushies.shuffle.each do |pl|
+    threads << Thread.new(pl) do |plush|
+      mt.synchronize do
+        log.debug "Plush \"#{plush.name}\" starts replying."
+      end
+      plush.clients[:twitter].mentions_timeline(count: 200).reverse.each do |m|
+        unless (reply = plush.reply!(m)).nil?
+          log.info "Plush \"#{plush.name}\" said: \"#{reply}\""
+          r = rand(3..6)
+          sleep r
+        end
+      end
+    end
+  end
+  threads.each(&:join)
 when 'update'
   plushies.each do |plush|
     corpus = JSON.parse(File.read("#{__dir__}/../corpora/#{plush.name}.json"),
@@ -101,7 +120,7 @@ when 'update'
     log.info("Updated model for \"#{plush.name}\" ")
   end
 else
-  warn "Unknown command: #{cmd.join(' ')}"
-  log.warn "Unknown command: #{cmd.join(' ')}"
+  warn "Unknown command: #{cmd}"
+  log.warn "Unknown command: #{cmd}"
   print_help
 end
