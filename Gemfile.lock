@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    moobooks (0.3.0)
+    moobooks (0.3.1)
       json (~> 2.0)
       mastodon (~> 0.1)
       moo_ebooks (~> 1.0)

@@ -67,7 +67,7 @@ module Moobooks
     # Method to post statuses to all available social platforms
     def post_status!
       @status = 'trap'
-      @status = @model.update(280) while @status =~ /#{@bad_words.join('|')}/
+      @status = @model.update(280) while @status =~ /#{@bad_words.join('|')}/i
       @twitter_client&.update(@status)
       @status
     end
@@ -80,7 +80,7 @@ module Moobooks
     def reply!(status)
       return if replied?(status)
       @status = 'trap'
-      while @status =~ /#{@bad_words.join('|')}/
+      while @status =~ /#{@bad_words.join('|')}/i
         @status = @model.reply(status.text, 200)
       end
       @twitter_client&.update("@#{status.user.screen_name} #{@status}",
